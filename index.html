@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Bord - Stations de Pompage Gabes </title>
+    <title>Tableau de Bord Dynamique</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,25 +40,64 @@
             height: 300px;
             border: none;
         }
+        .controls {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .controls input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        .controls button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .controls button:hover {
+            background-color: #005bb5;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Tableau de Bord - Stations de Pompage Gabes </h1>
+        <h1>Tableau de Bord Dynamique - Stations de Pompage</h1>
     </header>
+    <div class="controls">
+        <label for="pointsInput">Intervalle d'affichage en minutes :</label>
+        <input type="number" id="pointsInput" placeholder="Entrez un intervalle (min)" min="10" value="60">
+        <button onclick="updateCharts()">Mettre à jour</button>
+    </div>
     <div class="dashboard">
         <div class="chart-container">
             <h2>SP SR4</h2>
-            <iframe src="https://thingspeak.mathworks.com/channels/2781182/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=600&type=line" loading="lazy"></iframe>
+            <iframe id="chart1" src="https://thingspeak.mathworks.com/channels/2781182/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=1500&type=line"></iframe>
         </div>
         <div class="chart-container">
             <h2>SP SR9</h2>
-            <iframe src="https://thingspeak.mathworks.com/channels/2780154/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=600&type=line&update=15" loading="lazy"></iframe>
+            <iframe id="chart2" src="https://thingspeak.mathworks.com/channels/2780154/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15"></iframe>
         </div>
         <div class="chart-container">
             <h2>SP Zarat</h2>
-            <iframe src="https://thingspeak.mathworks.com/channels/2782219/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=600&type=line&update=15" loading="lazy"></iframe>
+            <iframe id="chart3" src="https://thingspeak.mathworks.com/channels/2782219/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15"></iframe>
         </div>
     </div>
+
+    <script>
+        function updateCharts() {
+            const interval = document.getElementById('pointsInput').value;
+            if (interval && interval > 0) {
+                document.getElementById('chart1').src = `https://thingspeak.mathworks.com/channels/2781182/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=${interval}&type=line`;
+                document.getElementById('chart2').src = `https://thingspeak.mathworks.com/channels/2780154/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=${interval}&type=line&update=15`;
+                document.getElementById('chart3').src = `https://thingspeak.mathworks.com/channels/2782219/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=${interval}&type=line&update=15`;
+            } else {
+                alert("Veuillez entrer un intervalle d'affichage valide (en minutes) !");
+            }
+        }
+    </script>
 </body>
 </html>
